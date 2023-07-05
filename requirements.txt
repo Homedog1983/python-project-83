@@ -2,3 +2,4 @@ poetry >= 1.5.0
 Flask >= 2.2.5
 gunicorn >= 20.1.0 
 python-dotenv >= 0.21.0
+psycopg2-binary >= 2.9.0
