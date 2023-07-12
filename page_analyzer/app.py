@@ -5,18 +5,27 @@ from flask import (
 )
 import os
 from dotenv import load_dotenv
+import psycopg2
+import page_analyzer.db as db
 
 
 app = Flask(__name__)
 
-load_dotenv()
-app.secret_key = os.getenv("SECRET_KEY")
+
+if "SECRET_KEY" not in os.environ:  # => dev-machine
+    load_dotenv()  # export to env SECRET_KEY and DATABASE_URL
+app.secret_key = os.getenv('SECRET_KEY')
+db_connection = psycopg2.connect(os.getenv('DATABASE_URL'))
+db_connection.autocommit = True
+db.sql_initializate(db_connection, f'{os.path.dirname(__file__)}/database.sql')
 
 
 @app.route('/')
 def index():
     return render_template(
-        'index.html'
+        'index.html',
+        sc=app.secret_key[:5],
+        conn=type(db_connection)
     )
 
 
