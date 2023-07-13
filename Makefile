@@ -9,3 +9,5 @@ routes:
 PORT ?= 8000
 start:
 	poetry run python -m gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer.app:app
+pgadmin:
+	poetry run pgadmin4

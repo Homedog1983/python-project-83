@@ -3,6 +3,7 @@
   {% include 'head.html' %}
   <body class="min-vh-100 d-flex flex-column">
     {% include 'header.html' %}
+    {% include 'messages.html' %}
     <main class="flex-grow-1">
         <div class="container-lg mt-3">
         <h3>{{sc}}</h3>
@@ -12,7 +13,7 @@
             <h1 class="display-3 text-center">Анализатор страниц</h1>
             <p class="lead text-center">Бесплатно проверяйте сайты на SEO-пригодность</p>
             <form action="/urls " method="post" class="d-flex justify-content-center" required>
-                <input type="text" name="url" placeholder="https://www.example.com" value="" class="form-control form-control-lg">
+                <input type="text" name="url" placeholder="https://www.example.com" value="{{url}}" class="form-control form-control-lg">
                 <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
             </form>
             </div>
