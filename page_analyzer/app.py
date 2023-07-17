@@ -3,21 +3,19 @@ from flask import (
 )
 import os
 from dotenv import load_dotenv
-import psycopg2
-import page_analyzer.db as db
 from validators import url as validate
 from urllib.parse import urlparse
-
+import page_analyzer.db as db
 
 app = Flask(__name__)
 
-
-if "SECRET_KEY" not in os.environ:  # export env for dev-server
+# export env for dev- or deploy-server
+if "SECRET_KEY" not in os.environ:
     load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
-db_connection = psycopg2.connect(os.getenv('DATABASE_URL'))
-db_connection.autocommit = True
-db.sql_load(db_connection, f'{os.path.dirname(__file__)}/database.sql')
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/database.sql')
 
 
 @app.route('/')
@@ -25,7 +23,7 @@ def index():
     return render_template(
         'index.html',
         sc=app.secret_key[:5],
-        conn=type(db_connection)
+        db=DATABASE_URL[:5]
     )
 
 
@@ -44,10 +42,10 @@ def urls():
             return render_template('index.html', url=url), 422
         parsed_data = urlparse(url)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-        table_raw = db.collect_raw_filtered_by(db_connection, url_normal)
+        table_raw = db.collect_raw_filtered_by(DATABASE_URL, url_normal)
         if not table_raw:
-            db.insert(db_connection, url_normal)
-            table_raw = db.collect_raw_filtered_by(db_connection, url_normal)
+            db.insert(DATABASE_URL, url_normal)
+            table_raw = db.collect_raw_filtered_by(DATABASE_URL, url_normal)
             flash('Страница успешно добавлена', 'success')
         else:
             flash('Страница уже существует', 'info')
@@ -58,7 +56,7 @@ def urls():
 def url(id):
 
     if request.method == 'GET':
-        table_raw = db.collect_raw_filtered_by(db_connection, id, column='id')
+        table_raw = db.collect_raw_filtered_by(DATABASE_URL, id, column='id')
         return render_template('urls/show.html', table_raw=table_raw)
 
     if request.method == 'POST':
