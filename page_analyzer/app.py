@@ -20,20 +20,15 @@ db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/database.sql')
 
 @app.route('/')
 def index():
-    return render_template(
-        'index.html',
-        sc=app.secret_key[:5],
-        db=DATABASE_URL[:5]
-    )
+    return render_template('index.html')
 
 
 @app.route('/urls/', methods=['GET', 'POST'])
 def urls():
 
     if request.method == 'GET':
-        # new table with parent table 'urls' ?
-        # new collect-function with joined columns ?
-        return render_template('urls/index.html')
+        table_raws = db.collect_all_raws_desc(DATABASE_URL)
+        return render_template('urls/index.html', table_raws=table_raws)
 
     if request.method == 'POST':
         url = request.form.to_dict()['url']

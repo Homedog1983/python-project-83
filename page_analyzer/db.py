@@ -11,8 +11,6 @@ def make_connection(DB_URL: str):
     except psycopg2.Error:
         print('Can`t establish connection to database')
 
-# Make decorator to try..except psycopg2.Error with print(f'{func_name}')
-
 
 def import_sql(DB_URL: str, sql_path: str):
     with open(sql_path) as sql_file:
@@ -39,3 +37,13 @@ def collect_raw_filtered_by(DB_URL: str, data: str, column='name'):
         table_raw = cursor.fetchone()
     connection.close()
     return table_raw
+
+
+def collect_all_raws_desc(DB_URL: str):
+    connection = make_connection(DB_URL)
+    query_template = "SELECT * FROM urls ORDER BY created_at DESC;"
+    with connection.cursor(cursor_factory=DictCursor) as cursor:
+        cursor.execute(query_template)
+        table_raws = cursor.fetchall()
+    connection.close()
+    return table_raws
