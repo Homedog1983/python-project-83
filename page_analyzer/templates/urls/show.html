@@ -13,15 +13,15 @@
             <tbody>
               <tr>
                 <td>ID</td>
-                <td>{{ urls_raw['id'] }}</td>
+                <td>{{urls_raw['id']}}</td>
               </tr>
               <tr>
                 <td>Имя</td>
-                <td>{{ urls_raw['name'] }}</td>
+                <td>{{urls_raw['name']}}</td>
               </tr>
               <tr>
                 <td>Дата создания</td>
-                <td>{{ urls_raw['created_at'] }}</td>
+                <td>{{urls_raw['created_at']}}</td>
               </tr>
             </tbody>
           </table>
@@ -49,9 +49,9 @@
                 <tr>
                   <td>{{check['id']}}</td>
                   <td>{{check['status_code']}}</td>
-                  <td>{{check['h1']}}</td>
-                  <td>{{check['title']}}</td>
-                  <td>{{check['description']}}</td>
+                  <td>{{check['h1']|default('', True)}}</td>
+                  <td>{{check['title']|default('', True)}}</td>
+                  <td>{{check['description']|default('', True)}}</td>
                   <td>{{check['created_at']}}</td>
                 </tr>
               {% endfor %}

@@ -29,7 +29,7 @@ def index():
 def urls():
 
     if request.method == 'GET':
-        join_raws = db.select_join_desc(DATABASE_URL)
+        join_raws = db.select_distinct_join_desc(DATABASE_URL)
         return render_template('urls/index.html', raws=join_raws)
 
     if request.method == 'POST':

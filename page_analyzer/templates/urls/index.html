@@ -28,8 +28,8 @@
                       {{raw['name']}}
                       </a>
                   </td>
-                  <td>{{raw['created_at']}}</td>
-                  <td>{{raw['status_code']}}</td>
+                  <td>{{raw['created_at']|default('', True)}}</td>
+                  <td>{{raw['status_code']|default('', True)}}</td>
                 </tr>
               {% endfor %}
             </tbody>

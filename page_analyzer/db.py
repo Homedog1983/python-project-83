@@ -40,14 +40,16 @@ def select_url_where(DB_URL: str, data: str, column='name'):
     return urls_raw
 
 
-def select_join_desc(DB_URL: str):
+def select_distinct_join_desc(DB_URL: str):
     query_template = """
-    SELECT urls.id AS id,
-      urls.name AS name,
-      url_checks.created_at AS created_at,
-      url_checks.status_code AS status_code
+    SELECT
+    DISTINCT ON (urls.id)
+        urls.id AS id,
+        urls.name as name,
+        url_checks.created_at AS created_at,
+        url_checks.status_code AS status_code
     FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id
-    ORDER BY urls.id DESC;"""
+    ORDER BY urls.id DESC, url_checks.id DESC;"""
     connection = make_connection(DB_URL)
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template)
