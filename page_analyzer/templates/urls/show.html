@@ -6,30 +6,29 @@
     {% include 'messages.html' %}
     <main class="flex-grow-1">
       <div class="container-lg mt-3">
-    
-        <h1>Сайт: {{ table_raw['name'] }}</h1>
+        <h1>Сайт: {{ urls_raw['name'] }}</h1>
 
         <div class="table-responsive">
           <table class="table table-bordered table-hover text-nowrap" data-test="url">
             <tbody>
               <tr>
                 <td>ID</td>
-                <td>{{ table_raw['id'] }}</td>
+                <td>{{ urls_raw['id'] }}</td>
               </tr>
               <tr>
                 <td>Имя</td>
-                <td>{{ table_raw['name'] }}</td>
+                <td>{{ urls_raw['name'] }}</td>
               </tr>
               <tr>
                 <td>Дата создания</td>
-                <td>{{ table_raw['created_at'] }}</td>
+                <td>{{ urls_raw['created_at'] }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h2 class="mt-5 mb-3">Проверки</h2>
-        <form method="post" action="/urls/{{ table_raw['id'] }}/checks">
+        <form method="post" action="/urls/{{ urls_raw['id'] }}/checks">
         <input type="submit" class="btn btn-primary" value="Запустить проверку">
         </form>
     
@@ -46,6 +45,16 @@
               </tr>
             </thead>
             <tbody>
+              {% for check in url_checks %}
+                <tr>
+                  <td>{{check['id']}}</td>
+                  <td>{{check['status_code']}}</td>
+                  <td>{{check['h1']}}</td>
+                  <td>{{check['title']}}</td>
+                  <td>{{check['description']}}</td>
+                  <td>{{check['created_at']}}</td>
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -55,4 +64,3 @@
     {% include 'footer.html' %}
   </body>
 </html>
-

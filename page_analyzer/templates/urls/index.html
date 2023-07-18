@@ -7,7 +7,6 @@
     
     <main class="flex-grow-1">
       <div class="container-lg mt-3">
-
         <h1>Сайты</h1>
         
         <div class="table-responsive">
@@ -21,7 +20,7 @@
             </tr>
             </thead>
             <tbody>
-              {% for raw in table_raws %}
+              {% for raw in raws %}
                 <tr>
                   <td>{{raw['id']}}</td>
                   <td>
@@ -29,8 +28,8 @@
                       {{raw['name']}}
                       </a>
                   </td>
-                  <td>still not yet</td>
-                  <td>still not yet</td>
+                  <td>{{raw['created_at']}}</td>
+                  <td>{{raw['status_code']}}</td>
                 </tr>
               {% endfor %}
             </tbody>

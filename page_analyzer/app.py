@@ -27,8 +27,8 @@ def index():
 def urls():
 
     if request.method == 'GET':
-        table_raws = db.collect_all_raws_desc(DATABASE_URL)
-        return render_template('urls/index.html', table_raws=table_raws)
+        join_raws = db.select_join_desc(DATABASE_URL)
+        return render_template('urls/index.html', raws=join_raws)
 
     if request.method == 'POST':
         url = request.form.to_dict()['url']
@@ -37,34 +37,33 @@ def urls():
             return render_template('index.html', url=url), 422
         parsed_data = urlparse(url)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-        table_raw = db.collect_raw_filtered_by(DATABASE_URL, url_normal)
-        if not table_raw:
-            db.insert(DATABASE_URL, url_normal)
-            table_raw = db.collect_raw_filtered_by(DATABASE_URL, url_normal)
+        urls_raw = db.select_url_where(DATABASE_URL, url_normal)
+        if not urls_raw:
+            db.insert_to_urls(DATABASE_URL, url_normal)
+            urls_raw = db.select_url_where(DATABASE_URL, url_normal)
             flash('Страница успешно добавлена', 'success')
         else:
             flash('Страница уже существует', 'info')
-        return redirect(url_for('url', id=table_raw['id']))
+        return redirect(url_for('url', id=urls_raw['id']))
 
 
-@app.route('/url/<id>', methods=['GET', 'POST'])
+@app.get('/url/<id>')
 def url(id):
+    urls_raw = db.select_url_where(DATABASE_URL, id, column='id')
+    url_checks = db.select_url_checks_desc(DATABASE_URL, id)
+    return render_template(
+        'urls/show.html',
+        urls_raw=urls_raw,
+        url_checks=url_checks
+        )
 
-    if request.method == 'GET':
-        table_raw = db.collect_raw_filtered_by(DATABASE_URL, id, column='id')
-        return render_template('urls/show.html', table_raw=table_raw)
 
-    if request.method == 'POST':
-        pass
-
-
-@app.route('/url/<id>/checks', methods=['GET', 'POST'])
+@app.post('/urls/<id>/checks')
 def url_checks(id):
-
-    if request.method == 'GET':
-        pass
-    if request.method == 'POST':
-        pass
+    print('in url_checks')
+    db.insert_to_url_checks(DATABASE_URL, id)
+    flash('Страница успешно проверена', 'success')
+    return redirect(url_for('url', id=id))
 
 
 # @app.route('/users/', methods=['GET', 'POST'])

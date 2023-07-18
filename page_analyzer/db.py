@@ -21,29 +21,70 @@ def import_sql(DB_URL: str, sql_path: str):
     connection.close()
 
 
-def insert(DB_URL: str, url: str):
+# 'urls' functions
+
+
+def insert_to_urls(DB_URL: str, url: str):
     connection = make_connection(DB_URL)
-    query_template = "INSERT INTO urls (name, created_at) VALUES (%s, %s);"
+    query_template = """
+    INSERT INTO urls (name, created_at) VALUES (%s, %s);"""
     with connection.cursor() as cursor:
         cursor.execute(query_template, (url, date.today().isoformat()))
     connection.close()
 
 
-def collect_raw_filtered_by(DB_URL: str, data: str, column='name'):
+def select_url_where(DB_URL: str, data: str, column='name'):
     connection = make_connection(DB_URL)
     query_template = f"SELECT * FROM urls WHERE {column} = %s;"
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template, (data,))
-        table_raw = cursor.fetchone()
+        urls_raw = cursor.fetchone()
     connection.close()
-    return table_raw
+    return urls_raw
 
 
-def collect_all_raws_desc(DB_URL: str):
+def select_join_desc(DB_URL: str):
     connection = make_connection(DB_URL)
-    query_template = "SELECT * FROM urls ORDER BY created_at DESC;"
+    query_template = """
+    SELECT urls.id AS id,
+      urls.name AS name,
+      url_checks.created_at AS created_at,
+      url_checks.status_code AS status_code
+    FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id
+    ORDER BY urls.id DESC;"""
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template)
-        table_raws = cursor.fetchall()
+        raws = cursor.fetchall()
     connection.close()
-    return table_raws
+    return raws
+
+
+# def select_urls_desc(DB_URL: str):
+#     connection = make_connection(DB_URL)
+#     query_template = """
+#     SELECT * FROM urls ORDER BY id DESC;"""
+#     with connection.cursor(cursor_factory=DictCursor) as cursor:
+#         cursor.execute(query_template)
+#         raws = cursor.fetchall()
+#     connection.close()
+#     return raws
+
+
+def insert_to_url_checks(DB_URL: str, url_id: str):
+    connection = make_connection(DB_URL)
+    query_template = """
+    INSERT INTO url_checks (url_id, created_at) VALUES (%s, %s);"""
+    with connection.cursor() as cursor:
+        cursor.execute(query_template, (url_id, date.today().isoformat()))
+    connection.close()
+
+
+def select_url_checks_desc(DB_URL: str, url_id: str):
+    connection = make_connection(DB_URL)
+    query_template = """
+    SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC;"""
+    with connection.cursor(cursor_factory=DictCursor) as cursor:
+        cursor.execute(query_template, (url_id,))
+        raws = cursor.fetchall()
+    connection.close()
+    return raws
