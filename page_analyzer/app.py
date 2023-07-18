@@ -20,7 +20,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/database.sql')
 
 
-@app.get('/')
+@app.route('/')
 def index():
     return render_template('index.html')
 
@@ -65,7 +65,7 @@ def url_checks(id):
     try:
         request = requests.get(urls_raw['name'], timeout=2)
     except (
-        requests.Timeout, requests.ConnectionError, requests.HTTPError
+        requests.Timeout, requests.ConnectionError, requests.HTTPError,
     ):
         flash('Произошла ошибка при проверке', 'danger')
     else:
