@@ -22,17 +22,17 @@ def import_sql(DB_URL: str, sql_path: str):
 
 
 def insert_to_urls(DB_URL: str, url: str):
-    connection = make_connection(DB_URL)
     query_template = """
     INSERT INTO urls (name, created_at) VALUES (%s, %s);"""
+    connection = make_connection(DB_URL)
     with connection.cursor() as cursor:
         cursor.execute(query_template, (url, date.today().isoformat()))
     connection.close()
 
 
 def select_url_where(DB_URL: str, data: str, column='name'):
-    connection = make_connection(DB_URL)
     query_template = f"SELECT * FROM urls WHERE {column} = %s;"
+    connection = make_connection(DB_URL)
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template, (data,))
         urls_raw = cursor.fetchone()
@@ -41,7 +41,6 @@ def select_url_where(DB_URL: str, data: str, column='name'):
 
 
 def select_join_desc(DB_URL: str):
-    connection = make_connection(DB_URL)
     query_template = """
     SELECT urls.id AS id,
       urls.name AS name,
@@ -49,6 +48,7 @@ def select_join_desc(DB_URL: str):
       url_checks.status_code AS status_code
     FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id
     ORDER BY urls.id DESC;"""
+    connection = make_connection(DB_URL)
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template)
         raws = cursor.fetchall()
@@ -56,24 +56,26 @@ def select_join_desc(DB_URL: str):
     return raws
 
 
-def insert_to_url_checks(DB_URL: str, url_id: str, status_code: int):
-    connection = make_connection(DB_URL)
+def insert_to_url_checks(
+        DB_URL: str, url_id: str, status_code: int, seo_data: dict):
     query_template = """
     INSERT INTO url_checks
-    (url_id, status_code, created_at)
-    VALUES (%s, %s, %s);"""
+    (url_id, status_code, created_at, h1, title, description)
+    VALUES (%s, %s, %s, %s, %s, %s);"""
+    connection = make_connection(DB_URL)
     with connection.cursor() as cursor:
         cursor.execute(
             query_template,
-            (url_id, status_code, date.today().isoformat())
+            (url_id, status_code, date.today().isoformat(),
+                seo_data['h1'], seo_data['title'], seo_data['description'])
         )
     connection.close()
 
 
 def select_url_checks_desc(DB_URL: str, url_id: str):
-    connection = make_connection(DB_URL)
     query_template = """
     SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC;"""
+    connection = make_connection(DB_URL)
     with connection.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(query_template, (url_id,))
         raws = cursor.fetchall()
