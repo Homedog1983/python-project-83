@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from validators import url as validate
 from urllib.parse import urlparse
+import requests
 import page_analyzer.db as db
 
 app = Flask(__name__)
@@ -60,10 +61,18 @@ def url(id):
 
 @app.post('/urls/<id>/checks')
 def url_checks(id):
-    print('in url_checks')
-    db.insert_to_url_checks(DATABASE_URL, id)
-    flash('Страница успешно проверена', 'success')
-    return redirect(url_for('url', id=id))
+    urls_raw = db.select_url_where(DATABASE_URL, id, column='id')
+    try:
+        request = requests.get(urls_raw['name'], timeout=2)
+    except (
+        requests.Timeout, requests.ConnectionError, requests.HTTPError
+    ):
+        flash('Произошла ошибка при проверке', 'danger')
+    else:
+        db.insert_to_url_checks(DATABASE_URL, id, request.status_code)
+        flash('Страница успешно проверена', 'success')
+    finally:
+        return redirect(url_for('url', id=id))
 
 
 # @app.route('/users/', methods=['GET', 'POST'])

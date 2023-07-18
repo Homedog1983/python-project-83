@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hexlet-code"
-version = "0.3.4"
+version = "0.3.5"
 description = "Educational project #3 on Hexlet platform (spec: Python developer)"
 authors = ["Evgeny Sokolov <sokolovsolod@gmail.com>"]
 readme = "README.md"
@@ -16,6 +16,7 @@ gunicorn = "^20.1.0"
 python-dotenv = "^1.0.0"
 psycopg2-binary = "^2.9.6"
 validators = "^0.20.0"
+requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
