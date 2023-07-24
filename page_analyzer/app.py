@@ -11,7 +11,7 @@ import page_analyzer.db as db
 
 app = Flask(__name__)
 
-# export env_vars for dev- or deploy-server
+# export env_vars for dev-server
 if "SECRET_KEY" not in os.environ:
     load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
