@@ -14,8 +14,8 @@ app = Flask(__name__)
 # export env_vars for dev-server
 if "SECRET_KEY" not in os.environ:
     load_dotenv()
-app.secret_key = os.getenv('SECRET_KEY', 'SECRET_KEY')
-DATABASE_URL = os.getenv('DATABASE_URL', 'DATABASE_URL')
+app.secret_key = os.getenv('SECRET_KEY')
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/database.sql')
 
