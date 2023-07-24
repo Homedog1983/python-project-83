@@ -3,12 +3,6 @@ import psycopg2
 from psycopg2.extras import DictCursor
 
 
-# class DB:
-#     def __init__(self, test_mode=False, test_data=None):
-#         self.test_mode = test_mode
-#         self.test_data = test_data
-
-
 def make_connection(DB_URL: str):
     try:
         connection = psycopg2.connect(DB_URL)

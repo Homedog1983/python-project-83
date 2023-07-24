@@ -11,7 +11,8 @@ def get_full_path(file_name):
 
 @pytest.mark.parametrize(
     "input_html, expected_json", [
-        (get_full_path("hexlet.html"), get_full_path("hexlet.json"))
+        (get_full_path("hexlet_downloaded.html"),
+            get_full_path("hexlet_parsed.json"))
     ])
 def test_seo_data(input_html, expected_json):
     with open(input_html) as html_file:
