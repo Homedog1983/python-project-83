@@ -17,7 +17,7 @@ if "SECRET_KEY" not in os.environ:
 app.secret_key = os.getenv('SECRET_KEY')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/database.sql')
+db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/../database.sql')
 
 
 @app.route('/')
