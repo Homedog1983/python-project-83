@@ -6,7 +6,6 @@ from validators import url as validate
 from urllib.parse import urlparse
 import os
 import requests
-import re
 import page_analyzer.html_parse as html_parse
 import page_analyzer.db as db
 
@@ -35,10 +34,10 @@ def urls():
         return render_template('urls/index.html', raws=join_raws)
 
     if request.method == 'POST':
-        data = request.form.to_dict()['url']
+        data = request.form["url"]
         if not validate(data):
             flash('Некорректный URL', 'danger')
-            return render_template('index.html', url=data), 422
+            return render_template('index.html', url=data), 308
         parsed_data = urlparse(data)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
@@ -69,12 +68,16 @@ def url_checks(id):
         request = requests.get(urls_raw['name'], timeout=2)
     except (
         requests.Timeout, requests.ConnectionError, requests.HTTPError,
-    ):
+    ) as e:
+        print(f'except: {e}')
         flash('Произошла ошибка при проверке', 'danger')
     else:
-        seo_data = html_parse.get_seo(request.text)
-        db.insert_to_url_checks(
-            DATABASE_URL, id, request.status_code, seo_data)
-        flash('Страница успешно проверена', 'success')
+        if request.status_code != 200:
+            flash('Произошла ошибка при проверке', 'danger')
+        else:
+            seo_data = html_parse.get_seo(request.text)
+            db.insert_to_url_checks(
+                DATABASE_URL, id, request.status_code, seo_data)
+            flash('Страница успешно проверена', 'success')
     finally:
         return redirect(url_for('url', id=id))
