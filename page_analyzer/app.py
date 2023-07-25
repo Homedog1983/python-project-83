@@ -1,5 +1,6 @@
 from flask import (
-    Flask, render_template, request, redirect, url_for, flash
+    Flask, render_template, request, redirect, url_for, flash,
+    make_response
 )
 from dotenv import load_dotenv
 from validators import url as validate
@@ -37,7 +38,10 @@ def urls():
         data = request.form["url"]
         if not validate(data):
             flash('Некорректный URL', 'danger')
-            return render_template('index.html', url=data), 308
+            # return render_template('index.html', url=data), 308
+            response = make_response(render_template('index.html', url=data))
+            response.status_code = 308
+            return response
         parsed_data = urlparse(data)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
