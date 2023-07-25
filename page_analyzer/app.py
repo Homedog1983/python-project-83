@@ -18,6 +18,10 @@ if "SECRET_KEY" not in os.environ:
 app.secret_key = os.getenv('SECRET_KEY')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
+# for GitHub actions (with PostgreSQL container)
+print('--!-- SECRET_KEY[:5]: ', app.secret_key[:5])
+print('--!-- DATABASE_URL: ', DATABASE_URL)
+
 db.import_sql(DATABASE_URL, f'{os.path.dirname(__file__)}/../database.sql')
 
 
