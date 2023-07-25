@@ -41,7 +41,6 @@ jobs:
           make lint
       - name: Run pytest
         run: |
-          createdb hexlet_83
           export SECRET_KEY='${{ env.secret }}'
           export DATABASE_URL='${{ env.db_url }}'
           make test
