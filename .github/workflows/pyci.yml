@@ -29,7 +29,9 @@ jobs:
           python-version: '3.10.x'
       - name: Build
         run: |
-          make build
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install poetry
       - name: Install dependencies
         run: |
           make install
