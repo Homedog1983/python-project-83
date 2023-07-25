@@ -1,21 +1,32 @@
-name: Python CI
-
+name: Python CI with PostgreSQL-container
 on:
   - push
   - pull_request
 
 jobs:
-  build:
+  container-job:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.10.x,]
+    env:
+      secret: ${{ vars.SECRET_KEY }}
+      db_url: ${{ vars.DATABASE_URL }}
+    container: node:10.18-jessie
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.10.x'
       - name: Install dependencies
         run: |
           pip install poetry
@@ -25,6 +36,9 @@ jobs:
           make lint
       - name: Run pytest
         run: |
+          createdb hexlet_83
+          export SECRET_KEY='${{ env.secret }}'
+          export DATABASE_URL='${{ env.db_url }}'
           make test
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
