@@ -1,13 +1,14 @@
 from flask import (
     Flask, render_template, request, redirect, url_for, flash
 )
-import os
-import requests
 from dotenv import load_dotenv
 from validators import url as validate
 from urllib.parse import urlparse
+import os
+import requests
 import page_analyzer.html_parse as html_parse
 import page_analyzer.db as db
+
 
 app = Flask(__name__)
 

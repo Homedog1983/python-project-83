@@ -1,6 +1,6 @@
-from page_analyzer.app import app as page_analyzer
+from page_analyzer.app import app as app
 
 
 __all__ = [
-    'page_analyzer',
+    'app',
 ]
