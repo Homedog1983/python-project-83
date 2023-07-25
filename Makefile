@@ -1,4 +1,5 @@
 build:
+	apt reinstall python3
 	./build.sh
 	pip install poetry
 install:
