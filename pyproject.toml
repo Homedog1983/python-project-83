@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hexlet-code"
-version = "0.3.18"
+version = "0.3.19"
 description = "Educational project #3 on Hexlet platform (spec: Python developer)"
 authors = ["Evgeny Sokolov <sokolovsolod@gmail.com>"]
 readme = "README.md"
@@ -8,10 +8,6 @@ readme = "README.md"
 packages = [
   { include = "page_analyzer" },
 ]
-
-[tool.poetry.scripts]
-page_analyzer = "page_analyzer.app:main"
-
 
 [tool.poetry.dependencies]
 python = "^3.10"
