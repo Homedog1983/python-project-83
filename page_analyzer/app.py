@@ -6,6 +6,7 @@ from validators import url as validate
 from urllib.parse import urlparse
 import os
 import requests
+import re
 import page_analyzer.html_parse as html_parse
 import page_analyzer.db as db
 
@@ -41,6 +42,7 @@ def urls():
         parsed_data = urlparse(data)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
+        urls_raw = db.select_url_where(DATABASE_URL, url_normal)
         if not urls_raw:
             db.insert_to_urls(DATABASE_URL, url_normal)
             urls_raw = db.select_url_where(DATABASE_URL, url_normal)
@@ -50,7 +52,7 @@ def urls():
         return redirect(url_for('url', id=urls_raw['id']))
 
 
-@app.get('/url/<id>')
+@app.get('/urls/<id>')
 def url(id):
     urls_raw = db.select_url_where(DATABASE_URL, id, column='id')
     url_checks = db.select_url_checks_desc(DATABASE_URL, id)
