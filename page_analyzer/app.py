@@ -26,7 +26,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/urls/', methods=['GET', 'POST'])
+@app.route('/urls', methods=['GET', 'POST'])
 def urls():
 
     if request.method == 'GET':
@@ -40,7 +40,6 @@ def urls():
             return render_template('index.html', url=data), 308
         parsed_data = urlparse(data)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-        urls_raw = db.select_url_where(DATABASE_URL, url_normal)
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
         if not urls_raw:
             db.insert_to_urls(DATABASE_URL, url_normal)
