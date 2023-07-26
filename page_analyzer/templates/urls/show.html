@@ -6,29 +6,29 @@
     {% include 'messages.html' %}
     <main class="flex-grow-1">
       <div class="container-lg mt-3">
-        <h1>Сайт: {{ urls_raw['name'] }}</h1>
+        <h1>Сайт: {{ url_data['name'] }}</h1>
 
         <div class="table-responsive">
           <table class="table table-bordered table-hover text-nowrap" data-test="url">
             <tbody>
               <tr>
                 <td>ID</td>
-                <td>{{urls_raw['id']}}</td>
+                <td>{{ url_data['id'] }}</td>
               </tr>
               <tr>
                 <td>Имя</td>
-                <td>{{urls_raw['name']}}</td>
+                <td>{{ url_data['name'] }}</td>
               </tr>
               <tr>
                 <td>Дата создания</td>
-                <td>{{urls_raw['created_at']}}</td>
+                <td>{{ url_data['created_at'] }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h2 class="mt-5 mb-3">Проверки</h2>
-        <form method="post" action="/urls/{{ urls_raw['id'] }}/checks">
+        <form method="post" action="/urls/{{ url_data['id'] }}/checks">
         <input type="submit" class="btn btn-primary" value="Запустить проверку">
         </form>
     
@@ -45,14 +45,14 @@
               </tr>
             </thead>
             <tbody>
-              {% for check in url_checks %}
+              {% for url_check in url_checks %}
                 <tr>
-                  <td>{{check['id']}}</td>
-                  <td>{{check['status_code']}}</td>
-                  <td>{{check['h1']|default('', True)}}</td>
-                  <td>{{check['title']|default('', True)}}</td>
-                  <td>{{check['description']|default('', True)}}</td>
-                  <td>{{check['created_at']}}</td>
+                  <td>{{ url_check['id'] }}</td>
+                  <td>{{ url_check['status_code'] }}</td>
+                  <td>{{ url_check['h1']|default('', True) }}</td>
+                  <td>{{ url_check['title']|default('', True) }}</td>
+                  <td>{{ url_check['description']|default('', True) }}</td>
+                  <td>{{ url_check['created_at'] }}</td>
                 </tr>
               {% endfor %}
             </tbody>

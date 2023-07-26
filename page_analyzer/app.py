@@ -26,45 +26,46 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/urls', methods=['GET', 'POST'])
-def urls():
+@app.get('/urls')
+def urls_get():
+    urls_data = db.get_urls_data(DATABASE_URL)
+    return render_template('urls/index.html', urls_data=urls_data)
 
-    if request.method == 'GET':
-        join_raws = db.select_distinct_join_desc(DATABASE_URL)
-        return render_template('urls/index.html', raws=join_raws)
 
-    if request.method == 'POST':
-        data = request.form["url"]
-        if not validate(data):
-            flash('Некорректный URL', 'danger')
-            return render_template('index.html', url=data), 422
-        parsed_data = urlparse(data)
-        url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-        urls_raw = db.select_url_where(DATABASE_URL, url_normal)
-        if urls_raw:
-            id = urls_raw['id']
-            flash('Страница уже существует', 'info')
-        else:
-            id = db.insert_to_urls(DATABASE_URL, url_normal)
-            flash('Страница успешно добавлена', 'success')
-        return redirect(url_for('url', id=id))
+@app.post('/urls')
+def urls_post():
+    data = request.form["url"]
+    if not validate(data):
+        flash('Некорректный URL', 'danger')
+        return render_template('index.html', url=data), 422
+    parsed_data = urlparse(data)
+    url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
+    url_data = db.get_url_data_by(DATABASE_URL, url_normal, 'name')
+    if url_data:
+        id = url_data['id']
+        flash('Страница уже существует', 'info')
+    else:
+        id = db.add_url(DATABASE_URL, url_normal)
+        flash('Страница успешно добавлена', 'success')
+    return redirect(url_for('url', id=id))
 
 
 @app.get('/urls/<id>')
 def url(id):
-    urls_raw = db.select_url_where(DATABASE_URL, id)
-    url_checks = db.select_url_checks_desc(DATABASE_URL, id)
+    url_data = db.get_url_data_by(DATABASE_URL, id, 'id')
+    url_checks = db.get_url_checks_by(DATABASE_URL, id)
     return render_template(
         'urls/show.html',
-        urls_raw=urls_raw,
+        url_data=url_data,
         url_checks=url_checks)
 
 
 @app.post('/urls/<id>/checks')
 def url_checks(id):
-    urls_raw = db.select_url_where(DATABASE_URL, id)
+    url_data = db.get_url_data_by(DATABASE_URL, id, 'id')
+    url = url_data['name']
     try:
-        request = requests.get(urls_raw['name'], timeout=2)
+        request = requests.get(url, timeout=2)
     except (
         requests.Timeout, requests.ConnectionError, requests.HTTPError,
     ) as e:
@@ -75,7 +76,7 @@ def url_checks(id):
             flash('Произошла ошибка при проверке', 'danger')
         else:
             seo_data = html_parse.get_seo(request.text)
-            db.insert_to_url_checks(
+            db.add_url_check(
                 DATABASE_URL, id, request.status_code, seo_data)
             flash('Страница успешно проверена', 'success')
     finally:

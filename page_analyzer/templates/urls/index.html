@@ -20,16 +20,16 @@
             </tr>
             </thead>
             <tbody>
-              {% for raw in raws %}
+              {% for url_data in urls_data %}
                 <tr>
-                  <td>{{raw['id']}}</td>
+                  <td>{{ url_data['id'] }}</td>
                   <td>
-                      <a href="{{ url_for('url', id=raw['id']) }}">
-                      {{raw['name']}}
+                      <a href="{{ url_for('url', id=url_data['id']) }}">
+                      {{ url_data['name'] }}
                       </a>
                   </td>
-                  <td>{{raw['created_at']|default('', True)}}</td>
-                  <td>{{raw['status_code']|default('', True)}}</td>
+                  <td>{{ url_data['created_at']|default('', True) }}</td>
+                  <td>{{ url_data['status_code']|default('', True) }}</td>
                 </tr>
               {% endfor %}
             </tbody>

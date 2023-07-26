@@ -3,7 +3,7 @@ import psycopg2
 from psycopg2.extras import DictCursor
 
 
-def make_connection(DB_URL: str):
+def get_connection(DB_URL: str):
     try:
         connection = psycopg2.connect(DB_URL)
         connection.autocommit = True
@@ -15,36 +15,32 @@ def make_connection(DB_URL: str):
 def import_sql(DB_URL: str, sql_path: str):
     with open(sql_path) as sql_file:
         query = sql_file.read()
-    connection = make_connection(DB_URL)
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-    connection.close()
+    with get_connection(DB_URL) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query)
 
 
-def insert_to_urls(DB_URL: str, url: str):
+def add_url(DB_URL: str, url: str):
     query_template = """
     INSERT INTO urls (name, created_at) VALUES (%s, %s)
     RETURNING id;"""
-    connection = make_connection(DB_URL)
-    with connection.cursor() as cursor:
-        cursor.execute(query_template, (url, date.today().isoformat()))
-        id = cursor.fetchone()[0]
-    connection.close()
+    with get_connection(DB_URL) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query_template, (url, date.today().isoformat()))
+            id = cursor.fetchone()[0]
     return id
 
 
-def select_url_where(DB_URL: str, data: str):
-    column = 'name' if 'http' in data else 'id'
+def get_url_data_by(DB_URL: str, data: str, column: str):
     query_template = f"SELECT * FROM urls WHERE {column} = %s;"
-    connection = make_connection(DB_URL)
-    with connection.cursor(cursor_factory=DictCursor) as cursor:
-        cursor.execute(query_template, (data,))
-        urls_raw = cursor.fetchone()
-    connection.close()
-    return urls_raw
+    with get_connection(DB_URL) as connection:
+        with connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute(query_template, (data,))
+            url_data = cursor.fetchone()
+    return url_data
 
 
-def select_distinct_join_desc(DB_URL: str):
+def get_urls_data(DB_URL: str):
     query_template = """
     SELECT
     DISTINCT ON (urls.id)
@@ -54,36 +50,33 @@ def select_distinct_join_desc(DB_URL: str):
         url_checks.status_code AS status_code
     FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id
     ORDER BY urls.id DESC, url_checks.id DESC;"""
-    connection = make_connection(DB_URL)
-    with connection.cursor(cursor_factory=DictCursor) as cursor:
-        cursor.execute(query_template)
-        raws = cursor.fetchall()
-    connection.close()
-    return raws
+    with get_connection(DB_URL) as connection:
+        with connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute(query_template)
+            urls_data = cursor.fetchall()
+    return urls_data
 
 
-def insert_to_url_checks(
+def add_url_check(
         DB_URL: str, url_id: str, status_code: int, seo_data: dict):
     query_template = """
     INSERT INTO url_checks
     (url_id, status_code, created_at, h1, title, description)
     VALUES (%s, %s, %s, %s, %s, %s);"""
-    connection = make_connection(DB_URL)
-    with connection.cursor() as cursor:
-        cursor.execute(
-            query_template,
-            (url_id, status_code, date.today().isoformat(),
-                seo_data['h1'], seo_data['title'], seo_data['description'])
-        )
-    connection.close()
+    with get_connection(DB_URL) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                query_template,
+                (url_id, status_code, date.today().isoformat(),
+                    seo_data['h1'], seo_data['title'], seo_data['description'])
+            )
 
 
-def select_url_checks_desc(DB_URL: str, url_id: str):
+def get_url_checks_by(DB_URL: str, url_id: str):
     query_template = """
     SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC;"""
-    connection = make_connection(DB_URL)
-    with connection.cursor(cursor_factory=DictCursor) as cursor:
-        cursor.execute(query_template, (url_id,))
-        raws = cursor.fetchall()
-    connection.close()
-    return raws
+    with get_connection(DB_URL) as connection:
+        with connection.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute(query_template, (url_id,))
+            checks = cursor.fetchall()
+    return checks
