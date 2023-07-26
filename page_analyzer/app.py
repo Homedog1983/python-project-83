@@ -41,12 +41,13 @@ def urls():
         parsed_data = urlparse(data)
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
-        if not urls_raw:
-            new_id = db.insert_to_urls(DATABASE_URL, url_normal)
-            flash('Страница успешно добавлена', 'success')
-        else:
+        if urls_raw:
+            id = urls_raw['id']
             flash('Страница уже существует', 'info')
-        return redirect(url_for('url', id=new_id))
+        else:
+            id = db.insert_to_urls(DATABASE_URL, url_normal)
+            flash('Страница успешно добавлена', 'success')
+        return redirect(url_for('url', id=id))
 
 
 @app.get('/urls/<id>')
