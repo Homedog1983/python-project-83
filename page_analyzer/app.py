@@ -42,17 +42,16 @@ def urls():
         url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
         urls_raw = db.select_url_where(DATABASE_URL, url_normal)
         if not urls_raw:
-            db.insert_to_urls(DATABASE_URL, url_normal)
-            urls_raw = db.select_url_where(DATABASE_URL, url_normal)
+            new_id = db.insert_to_urls(DATABASE_URL, url_normal)
             flash('Страница успешно добавлена', 'success')
         else:
             flash('Страница уже существует', 'info')
-        return redirect(url_for('url', id=urls_raw['id']))
+        return redirect(url_for('url', id=new_id))
 
 
 @app.get('/urls/<id>')
 def url(id):
-    urls_raw = db.select_url_where(DATABASE_URL, id, column='id')
+    urls_raw = db.select_url_where(DATABASE_URL, id)
     url_checks = db.select_url_checks_desc(DATABASE_URL, id)
     return render_template(
         'urls/show.html',
@@ -62,7 +61,7 @@ def url(id):
 
 @app.post('/urls/<id>/checks')
 def url_checks(id):
-    urls_raw = db.select_url_where(DATABASE_URL, id, column='id')
+    urls_raw = db.select_url_where(DATABASE_URL, id)
     try:
         request = requests.get(urls_raw['name'], timeout=2)
     except (

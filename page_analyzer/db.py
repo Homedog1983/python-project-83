@@ -23,14 +23,18 @@ def import_sql(DB_URL: str, sql_path: str):
 
 def insert_to_urls(DB_URL: str, url: str):
     query_template = """
-    INSERT INTO urls (name, created_at) VALUES (%s, %s);"""
+    INSERT INTO urls (name, created_at) VALUES (%s, %s)
+    RETURNING id;"""
     connection = make_connection(DB_URL)
     with connection.cursor() as cursor:
         cursor.execute(query_template, (url, date.today().isoformat()))
+        id = cursor.fetchone()[0]
     connection.close()
+    return id
 
 
-def select_url_where(DB_URL: str, data: str, column='name'):
+def select_url_where(DB_URL: str, data: str):
+    column = 'name' if 'http' in data else 'id'
     query_template = f"SELECT * FROM urls WHERE {column} = %s;"
     connection = make_connection(DB_URL)
     with connection.cursor(cursor_factory=DictCursor) as cursor:
