@@ -4,6 +4,8 @@ lint:
 	poetry run flake8 page_analyzer
 test:
 	poetry run pytest -vv
+test_s:
+	poetry run pytest -vv -s
 test-cov:
 	poetry run pytest --cov=page_analyzer
 test-coverage:

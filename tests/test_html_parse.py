@@ -1,8 +1,8 @@
 import pytest
 import os
-from os.path import splitext
 import page_analyzer.html_parse as html_parse
 from json import load as json_load
+from os.path import splitext
 
 
 def get_full_path(file_name):
