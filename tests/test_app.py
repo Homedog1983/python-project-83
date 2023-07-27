@@ -1,10 +1,14 @@
 import pytest
+import os
 from page_analyzer import app as tested_app
+from page_analyzer import import_sql
 
 # Каждый следующий тест зависит от предыдущего (наполняется БД)
 # Идемпотентность достигается автоматическим обновлением таблиц
-# вначале тестовой сессии (из-за импорта в __init__)
+# вначала тестовой сессии
 
+
+import_sql(f'{os.path.dirname(__file__)}/../database.sql')
 app = tested_app
 app.testing = True
 
