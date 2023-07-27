@@ -1,46 +1,52 @@
 from datetime import date
+import os
 import psycopg2
 from psycopg2.extras import DictCursor
 
 
-def get_connection(DB_URL: str):
+def get_connection():
+    db_url = os.getenv('DATABASE_URL')
+    if not db_url:
+        raise ValueError('Not found $DATABASE_URL')
     try:
-        connection = psycopg2.connect(DB_URL)
+        connection = psycopg2.connect(db_url)
         connection.autocommit = True
         return connection
     except psycopg2.Error:
         print('Can`t establish connection to database')
 
 
-def import_sql(DB_URL: str, sql_path: str):
+def import_sql(sql_path: str):
     with open(sql_path) as sql_file:
         query = sql_file.read()
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(query)
 
 
-def add_url(DB_URL: str, url: str):
+def add_url(url: str):
     query_template = """
     INSERT INTO urls (name, created_at) VALUES (%s, %s)
     RETURNING id;"""
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(query_template, (url, date.today().isoformat()))
             id = cursor.fetchone()[0]
-    return id
+            return id
 
 
-def get_url_data_by(DB_URL: str, data: str, column: str):
+def get_url_by_attrs(attrs: dict):
+    data = attrs.get('data')
+    column = attrs.get('column')
     query_template = f"SELECT * FROM urls WHERE {column} = %s;"
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template, (data,))
-            url_data = cursor.fetchone()
-    return url_data
+            url = cursor.fetchone()
+            return url
 
 
-def get_urls_data(DB_URL: str):
+def get_urls_with_last_check_info():
     query_template = """
     SELECT
     DISTINCT ON (urls.id)
@@ -50,20 +56,19 @@ def get_urls_data(DB_URL: str):
         url_checks.status_code AS status_code
     FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id
     ORDER BY urls.id DESC, url_checks.id DESC;"""
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template)
-            urls_data = cursor.fetchall()
-    return urls_data
+            urls = cursor.fetchall()
+            return urls
 
 
-def add_url_check(
-        DB_URL: str, url_id: str, status_code: int, seo_data: dict):
+def add_url_check(url_id: str, status_code: int, seo_data: dict):
     query_template = """
     INSERT INTO url_checks
     (url_id, status_code, created_at, h1, title, description)
     VALUES (%s, %s, %s, %s, %s, %s);"""
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 query_template,
@@ -72,11 +77,11 @@ def add_url_check(
             )
 
 
-def get_url_checks_by(DB_URL: str, url_id: str):
+def get_url_checks_by(url_id: str):
     query_template = """
     SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC;"""
-    with get_connection(DB_URL) as connection:
+    with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template, (url_id,))
             checks = cursor.fetchall()
-    return checks
+            return checks

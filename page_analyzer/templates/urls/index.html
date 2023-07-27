@@ -20,16 +20,16 @@
             </tr>
             </thead>
             <tbody>
-              {% for url_data in urls_data %}
+              {% for url in urls %}
                 <tr>
-                  <td>{{ url_data['id'] }}</td>
+                  <td>{{ url['id'] }}</td>
                   <td>
-                      <a href="{{ url_for('url', id=url_data['id']) }}">
-                      {{ url_data['name'] }}
+                      <a href="{{ url_for('url', id=url['id']) }}">
+                      {{ url['name'] }}
                       </a>
                   </td>
-                  <td>{{ url_data['created_at']|default('', True) }}</td>
-                  <td>{{ url_data['status_code']|default('', True) }}</td>
+                  <td>{{ url['created_at']|default('', True) }}</td>
+                  <td>{{ url['status_code']|default('', True) }}</td>
                 </tr>
               {% endfor %}
             </tbody>
