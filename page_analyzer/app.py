@@ -9,8 +9,8 @@ import page_analyzer.html_parse as html_parse
 import page_analyzer.db as db
 
 
-def create_app(file_name: str):
-    app = Flask(file_name)
+def create_app(import_path: str):
+    app = Flask(import_path)
     # export env_vars for dev-server
     if "SECRET_KEY" not in os.environ:
         load_dotenv()
