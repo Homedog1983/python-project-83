@@ -1,0 +1,11 @@
+{
+    "id": 1,
+    "url": "http://hexlet.io",
+    "code": 200,
+    "body": "<title>title of hexlet.io</title><meta name='description' content='hexlet_description'><h1>H1 of hexlet.io</h1>",
+    "message": "Страница успешно проверена",
+    "h1": "H1 of hexlet.io",
+    "title": "title of hexlet.io",
+    "description": "hexlet_description",
+    "redirect": 1
+}

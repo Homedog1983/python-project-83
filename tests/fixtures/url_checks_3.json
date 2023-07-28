@@ -1,0 +1,11 @@
+{
+    "id": 3,
+    "url": "http://vc.com",
+    "code": 200,
+    "body": "<title>title of vc.com</title><meta name='description' content='vc_description'><h1>H1 of vc.com</h1>",
+    "message": "Страница успешно проверена",
+    "h1": "H1 of vc.com",
+    "title": "title of vc.com",
+    "description": "vc_description",
+    "redirect": 1
+}
