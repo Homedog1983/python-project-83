@@ -34,18 +34,18 @@ def urls_post():
         flash('Некорректный URL', 'danger')
         return render_template('index.html', url=data), 422
     parsed_data = urlparse(data)
-    flash(f'parsed_data = {parsed_data}')  # test mes for deploy
+    flash(f'parsed_data = {parsed_data}', 'info')
     url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-    flash(f'url_normal = {url_normal}')  # test mes for deploy
+    flash(f'url_normal = {url_normal}', 'info')
     url = db.get_url_by_attrs({'column': 'name', 'data': url_normal})
-    flash(f'url = {url}')  # test mes for deploy
+    flash(f'url = {url}', 'info')  # test mes for deploy
     if url:
         id = url['id']
         flash('Страница уже существует', 'info')
     else:
         id = db.add_url(url_normal)
         flash('Страница успешно добавлена', 'success')
-    flash(f'id ater if = {id}')  # test mes for deploy
+    flash(f'id ater if-else = {id}', 'info')
     return redirect(url_for('url', id=id))
 
 
@@ -62,25 +62,30 @@ def url(id):
 @app.post('/urls/<id>/checks')
 def url_checks(id):
     url = db.get_url_by_attrs({'column': 'id', 'data': id})
-    flash(f'url = {url}')  # test mes for deploy
     url_name = url['name']
+    flash(f'url name = {url_name}', 'info')
     try:
-        request = requests.get(url_name, timeout=5)
+        flash('to try in', 'info')
+        response = requests.get(url_name, timeout=5)
+        flash(f'response = {response}', 'info')
+        flash(f'response.code = {response.status_code}', 'info')
+        flash(f'response.reason = {response.reason}', 'info')
+        flash(f'response.headers = {response.headers}', 'info')
     except (
         requests.Timeout, requests.ConnectionError,
         requests.HTTPError, requests.RequestException
     ) as e:
-        flash(f'except: {e}')  # test mes for deploy
-        print(f'except: {e}')
+        flash(f'except: {e}', 'info')  # test mes for deploy
         flash('Произошла ошибка при проверке', 'danger')
     else:
-        if request.status_code != 200:
+        if response.status_code != 200:
             flash('sc != 200')  # test mes for deploy
             flash('Произошла ошибка при проверке', 'danger')
         else:
-            seo_data = html_parse.get_seo(request.text)
-            flash(f'seo = {seo_data}')  # test mes for deploy
-            db.add_url_check(id, request.status_code, seo_data)
+            flash('to else-else in', 'info')
+            seo_data = html_parse.get_seo(response.text)
+            flash(f'seo = {seo_data}', 'info')  # test mes for deploy
+            db.add_url_check(id, response.status_code, seo_data)
             flash('Страница успешно проверена', 'success')
     finally:
         return redirect(url_for('url', id=id))
