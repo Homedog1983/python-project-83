@@ -34,18 +34,14 @@ def urls_post():
         flash('Некорректный URL', 'danger')
         return render_template('index.html', url=data), 422
     parsed_data = urlparse(data)
-    flash(f'parsed_data = {parsed_data}', 'info')
     url_normal = ''.join([parsed_data.scheme, '://', parsed_data.hostname])
-    flash(f'url_normal = {url_normal}', 'info')
     url = db.get_url_by_attrs({'column': 'name', 'data': url_normal})
-    flash(f'url = {url}', 'info')  # test mes for deploy
     if url:
         id = url['id']
         flash('Страница уже существует', 'info')
     else:
         id = db.add_url(url_normal)
         flash('Страница успешно добавлена', 'success')
-    flash(f'id ater if-else = {id}', 'info')
     return redirect(url_for('url', id=id))
 
 
@@ -63,14 +59,10 @@ def url(id):
 def url_checks(id):
     url = db.get_url_by_attrs({'column': 'id', 'data': id})
     url_name = url['name']
-    flash(f'url name = {url_name}', 'info')
     try:
         flash('to try in', 'info')
         response = requests.get(url_name, timeout=5)
         flash(f'response = {response}', 'info')
-        flash(f'response.code = {response.status_code}', 'info')
-        flash(f'response.reason = {response.reason}', 'info')
-        flash(f'response.headers = {response.headers}', 'info')
     except (
         requests.Timeout, requests.ConnectionError,
         requests.HTTPError, requests.RequestException
