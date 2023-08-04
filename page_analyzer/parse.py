@@ -1,4 +1,10 @@
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+
+
+def get_normalize_url(data: str):
+    parsed_data = urlparse(data)
+    return ''.join([parsed_data.scheme, '://', parsed_data.hostname])
 
 
 def get_seo(text: str):

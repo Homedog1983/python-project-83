@@ -1,0 +1,37 @@
+[
+    {
+        "name": "asfg",
+        "expected_code": 422,
+        "expected_message": "Некорректный URL",
+        "expected_redirect": 0,
+        "expected_path": "/urls"
+    },
+    {
+        "name": "http://hexlet.io/",
+        "expected_code": 200,
+        "expected_message": "Страница успешно добавлена",
+        "expected_redirect": 1,
+        "expected_path": "/urls/1"
+    },
+    {
+        "name": "http://hexlet.io/sdf",
+        "expected_code": 200,
+        "expected_message": "Страница уже существует",
+        "expected_redirect": 1,
+        "expected_path": "/urls/1"
+    },
+    {
+        "name": "http://wrong.com",
+        "expected_code": 200,
+        "expected_message": "Страница успешно добавлена",
+        "expected_redirect": 1,
+        "expected_path": "/urls/2"
+    },
+    {
+        "name": "http://vc.com/fgh",
+        "expected_code": 200,
+        "expected_message": "Страница успешно добавлена",
+        "expected_redirect": 1,
+        "expected_path": "/urls/3"
+    }
+]

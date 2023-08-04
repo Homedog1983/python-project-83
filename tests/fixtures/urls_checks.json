@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "url": "http://hexlet.io",
+        "code": 200,
+        "body": "<title>title of hexlet.io</title><meta name='description' content='hexlet_description'><h1>H1 of hexlet.io</h1>",
+        "message": "Страница успешно проверена",
+        "h1": "H1 of hexlet.io",
+        "title": "title of hexlet.io",
+        "description": "hexlet_description",
+        "redirect": 1
+    },
+    {
+        "id": 2,
+        "url": "http://wrong.com",
+        "code": 404,
+        "body": "<title>title of hexlet.io</title><meta name='description' content='hexlet_description'><h1>H1 of hexlet.io</h1>",
+        "message": "Произошла ошибка при проверке",
+        "h1": "",
+        "title": "",
+        "description": "",
+        "redirect": 1
+    },
+    {
+        "id": 3,
+        "url": "http://vc.com",
+        "code": 200,
+        "body": "<title>title of vc.com</title><meta name='description' content='vc_description'><h1>H1 of vc.com</h1>",
+        "message": "Страница успешно проверена",
+        "h1": "H1 of vc.com",
+        "title": "title of vc.com",
+        "description": "vc_description",
+        "redirect": 1
+    }
+]

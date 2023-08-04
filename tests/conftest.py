@@ -1,12 +1,13 @@
-import os
 from json import load as json_load
 from os.path import splitext
 from datetime import date
 import re
+from page_analyzer import ROOT_DIR
+
+FIXTURES = f'{ROOT_DIR}/tests/fixtures'
 
 
 def get_full_path(file_name):
-    FIXTURES = f'{os.path.dirname(__file__)}/fixtures'
     return f"{FIXTURES}/{file_name}"
 
 

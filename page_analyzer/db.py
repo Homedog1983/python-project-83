@@ -31,8 +31,7 @@ def add_url(url: str):
     with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(query_template, (url, date.today().isoformat()))
-            id = cursor.fetchone()[0]
-            return id
+            return cursor.fetchone()[0]
 
 
 def get_url_by_attrs(attrs: dict):
@@ -42,8 +41,7 @@ def get_url_by_attrs(attrs: dict):
     with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template, (data,))
-            url = cursor.fetchone()
-            return url
+            return cursor.fetchone()
 
 
 def get_urls_with_last_check_info():
@@ -59,8 +57,7 @@ def get_urls_with_last_check_info():
     with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template)
-            urls = cursor.fetchall()
-            return urls
+            return cursor.fetchall()
 
 
 def add_url_check(url_id: str, status_code: int, seo_data: dict):
@@ -83,5 +80,4 @@ def get_url_checks_by(url_id: str):
     with get_connection() as connection:
         with connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(query_template, (url_id,))
-            checks = cursor.fetchall()
-            return checks
+            return cursor.fetchall()
