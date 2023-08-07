@@ -20,7 +20,7 @@ def app():
 @pook.on
 def test_app(app, index, test_urls, urls_checks, template_urls):
     with app.test_client() as client:
-        # test index"
+        # test index:
         response = client.get("/")
         response_text = response.text
         for phrase in get_content_from(index):

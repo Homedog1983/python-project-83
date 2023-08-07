@@ -64,8 +64,7 @@ def url_checks(id):
     except (
         requests.Timeout, requests.ConnectionError,
         requests.HTTPError, requests.RequestException
-    ) as e:
-        print(f'Произошла ошибка при проверке: {e}')
+    ):
         flash('Произошла ошибка при проверке', 'danger')
     else:
         if response.status_code != 200:
