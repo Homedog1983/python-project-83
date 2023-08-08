@@ -1,4 +1,5 @@
-<center>
+<div align="center">
+
 
 [![Actions Status](https://github.com/Homedog1983/python-project-83/workflows/hexlet-check/badge.svg)](https://github.com/Homedog1983/python-project-83/actions) ![Pithon CI](https://github.com/Homedog1983/python-project-83/actions/workflows/pyci.yml/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ce86add945b7f7ce850f/maintainability)](https://codeclimate.com/github/Homedog1983/python-project-83/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ce86add945b7f7ce850f/test_coverage)](https://codeclimate.com/github/Homedog1983/python-project-83/test_coverage)
 
@@ -16,7 +17,7 @@
 
 ---
 
-#### :camera: some example pics below :camera
+#### :camera: some example pics below :camera:
 
 #### Main page with post-form for URL
 
@@ -58,4 +59,5 @@
 
 ### :fire: [Working application try here](https://page-analyser.onrender.com) :fire:
 
-</center>
+
+</div>
