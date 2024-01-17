@@ -33,9 +33,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Build
         run: |
+          LGRN='\033[1;32m'
+          python -m pip install --upgrade pip
+          echo -e "${LGRN}pip install all requirements:"
+          pip install -r requirements.txt
+          echo -e "${LGRN}pip install poetry:"
           pip install poetry
-      - name: Install dependencies
-        run: |
+          echo -e "${LGRN}poetry install:"
           poetry install
       - name: Run linter
         run: |
